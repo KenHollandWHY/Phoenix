@@ -3,258 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Phoenix Thesis: An Interactive Exploration</title>
+    <title>The Phoenix Thesis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals (Stone, Amber, Slate) -->
-    <!-- Application Structure Plan: A tab-based single-page application. The structure is thematic rather than linear, grouping the report's content into 'Opportunity', 'Asset', 'Playbook', 'Tech Stack', and 'Model'. This allows users to explore the concepts in any order. The page is simplified to act as a concise marketing page, removing complex interactive elements like the AI simulator in favor of clear, direct content. -->
-    <!-- Visualization & Content Choices: The report is conceptual, so visualizations are structural. The core strategy is a clickable HTML/CSS process flow. Key concepts are presented in comparison cards. The "cartoony" emojis are replaced with abstract icons made from styled divs for a more professional aesthetic. All text is heavily condensed for scannability. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #1f2937;
         }
-        .tab-button.active {
-            border-color: #f59e0b;
-            color: #f59e0b;
-            font-weight: 600;
+        .nav-link.active {
+            color: #ea580c;
+            border-bottom-color: #ea580c;
         }
-        .playbook-step.active {
-            background-color: #f59e0b;
+        .sub-nav-link.active {
+            background-color: #ea580c;
             color: white;
-            transform: scale(1.05);
         }
-        .content-section {
+        .content-section, .sub-content-section {
             display: none;
         }
-        .content-section.active {
+        .content-section.active, .sub-content-section.active {
             display: block;
         }
-        .playbook-details {
-            display: none;
+        .card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .playbook-details.active {
-            display: block;
+        .fox-icon {
+            display: inline-block;
+            position: relative;
+            width: 48px;
+            height: 40px; /* Adjusted for fox head shape */
+        }
+        .fox-icon .ear {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 15px solid #f97316; /* Orange */
+            top: 0;
+        }
+        .fox-icon .ear-left {
+            left: 4px;
+            transform: rotate(-35deg);
+        }
+        .fox-icon .ear-right {
+            right: 4px;
+            transform: rotate(35deg);
+        }
+        .fox-icon .head {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 24px solid transparent;
+            border-right: 24px solid transparent;
+            border-top: 32px solid #ea580c; /* Darker Orange */
+            bottom: 0;
+            left: 0;
+        }
+        .fox-icon .snout {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 20px solid #ffffff;
+            bottom: 0px;
+            left: 10px;
+            z-index: 1;
         }
     </style>
 </head>
-<body class="bg-stone-50 text-slate-800">
+<body class="antialiased">
 
-    <div class="container mx-auto px-4 py-8 md:py-12">
+    <div class="container mx-auto px-4 py-10">
 
-        <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-2">The Phoenix Thesis</h1>
-            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">Unlocking value in failed startups through customer-centric redevelopment.</p>
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-900 mb-2 flex justify-center items-center">
+                <div class="fox-icon mr-4">
+                    <div class="ear ear-left"></div>
+                    <div class="ear ear-right"></div>
+                    <div class="head"></div>
+                    <div class="snout"></div>
+                </div>
+                <span>The Phoenix Thesis</span>
+            </h1>
+            <p class="text-xl text-gray-600">A playbook for creating value from the ashes of failed startups.</p>
         </header>
 
-        <nav class="mb-12 border-b border-stone-200">
-            <ul id="main-nav" class="flex flex-wrap justify-center -mb-px text-sm font-medium text-center text-slate-500">
-                <li class="mr-2">
-                    <button data-tab="opportunity" class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-amber-600 hover:border-amber-500 transition-colors duration-200">The Opportunity</button>
-                </li>
-                <li class="mr-2">
-                    <button data-tab="asset" class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-amber-600 hover:border-amber-500 transition-colors duration-200">The Asset</button>
-                </li>
-                <li class="mr-2">
-                    <button data-tab="playbook" class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-amber-600 hover:border-amber-500 transition-colors duration-200">The Playbook</button>
-                </li>
-                <li class="mr-2">
-                    <button data-tab="tech" class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-amber-600 hover:border-amber-500 transition-colors duration-200">The Tech Stack</button>
-                </li>
-                <li>
-                    <button data-tab="model" class="tab-button inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-amber-600 hover:border-amber-500 transition-colors duration-200">The Model</button>
-                </li>
+        <nav class="mb-12 border-b border-gray-200">
+            <ul id="main-nav" class="flex justify-center space-x-8 text-lg font-medium text-gray-500">
+                <li><button data-tab="thesis" class="nav-link py-3 border-b-2 border-transparent hover:text-orange-600 hover:border-orange-500 transition-all duration-200">Thesis</button></li>
+                <li><button data-tab="tech" class="nav-link py-3 border-b-2 border-transparent hover:text-orange-600 hover:border-orange-500 transition-all duration-200">Tech Stack</button></li>
+                <li><button data-tab="sourcing" class="nav-link py-3 border-b-2 border-transparent hover:text-orange-600 hover:border-orange-500 transition-all duration-200">Deal Sourcing</button></li>
             </ul>
         </nav>
 
         <main id="main-content">
-            <section id="opportunity" class="content-section">
+            <!-- Thesis Section -->
+            <section id="thesis" class="content-section">
                 <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">Finding Value in Failure</h2>
-                    <p class="text-center text-slate-600 mb-8">The opportunity lies in startups that failed due to poor execution, not a broken business model.</p>
+                    <div class="card p-8 mb-8">
+                        <h2 class="text-3xl font-bold mb-4">Core Thesis</h2>
+                        <p class="text-lg text-gray-700">Acquire startups that failed due to poor execution—not a bad market—to unlock their undervalued potential with superior product management and a lean operational model.</p>
+                    </div>
                     <div class="grid md:grid-cols-2 gap-8">
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm">
-                            <h3 class="font-bold text-xl mb-3 text-green-600">✓ Ideal Target</h3>
-                            <p class="text-slate-600 mb-4">Found a real customer problem but failed to build the right solution.</p>
-                            <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
-                                <li>Poor Product Strategy</li>
-                                <li>Ineffective Go-to-Market</li>
-                                <li>Managerial Incompetence</li>
+                        <div class="card p-6">
+                            <h3 class="text-2xl font-semibold mb-3">The Opportunity</h3>
+                            <p class="text-gray-600">Target startups that found a real problem but built the wrong product. Avoid fundamentally broken business models.</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-2xl font-semibold mb-3">The Asset</h3>
+                            <p class="text-gray-600">The primary asset is validated insight from customer data, comms, usage analytics, and the untapped knowledge of overlooked employees.</p>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-2xl font-semibold mb-3">The Playbook</h3>
+                            <p class="text-gray-600 mb-2">A repeatable process:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                <li><strong>Source</strong> failed startups with customer traction.</li>
+                                <li><strong>Access</strong> assets cheaply.</li>
+                                <li><strong>Insight</strong> via data archaeology.</li>
+                                <li><strong>Rebuild</strong> the right product efficiently.</li>
                             </ul>
                         </div>
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm">
-                             <h3 class="font-bold text-xl mb-3 text-red-600">✗ Avoid</h3>
-                            <p class="text-slate-600 mb-4">Structurally unprofitable ventures with no amount of operational excellence can fix.</p>
-                             <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
-                                <li>Unsustainable Unit Economics</li>
-                                <li>No Real Market Need</li>
-                            </ul>
+                        <div class="card p-6">
+                            <h3 class="text-2xl font-semibold mb-3">The Model</h3>
+                            <p class="text-gray-600">Inspired by Constellation Software, we target companies with the right niche but the wrong management.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="asset" class="content-section">
-                 <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">The Primary Asset: Validated Insight</h2>
-                    <p class="text-center text-slate-600 mb-8">We acquire the customer and market insight the failed company already paid for, often buried in unstructured data.</p>
-                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm text-center">
-                            <div class="h-16 w-16 mx-auto mb-4 flex flex-col justify-center items-center">
-                                <div class="w-10 h-1 bg-slate-300 rounded-full"></div>
-                                <div class="w-10 h-1 bg-slate-300 rounded-full mt-2"></div>
-                                <div class="w-10 h-1 bg-slate-300 rounded-full mt-2"></div>
-                            </div>
-                            <h3 class="font-bold text-lg">Customer Lists</h3>
-                            <p class="text-sm text-slate-600">A direct line to an interested audience.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm text-center">
-                            <div class="h-16 w-16 mx-auto mb-4 flex justify-center items-center">
-                                <div class="w-10 h-8 bg-slate-300 rounded-lg"></div>
-                                <div class="w-4 h-2 bg-white absolute transform -translate-y-1 translate-x-3"></div>
-                            </div>
-                            <h3 class="font-bold text-lg">Communication Data</h3>
-                            <p class="text-sm text-slate-600">The unfiltered voice of the customer.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm text-center">
-                            <div class="h-16 w-16 mx-auto mb-4 flex justify-end items-end space-x-1">
-                                <div class="w-3 h-8 bg-slate-300 rounded-t-sm"></div>
-                                <div class="w-3 h-12 bg-amber-400 rounded-t-sm"></div>
-                                <div class="w-3 h-6 bg-slate-300 rounded-t-sm"></div>
-                            </div>
-                            <h3 class="font-bold text-lg">Usage Analytics</h3>
-                            <p class="text-sm text-slate-600">Data revealing user intent and needs.</p>
-                        </div>
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm text-center">
-                            <div class="h-16 w-16 mx-auto mb-4 flex justify-center items-center">
-                                <div class="w-10 h-10 border-2 border-slate-300 rounded-full flex justify-center items-center">
-                                    <div class="w-1 h-1 bg-slate-500 rounded-full"></div>
-                                    <div class="absolute w-px h-4 bg-slate-300 transform rotate-45"></div>
-                                    <div class="absolute w-px h-4 bg-slate-300 transform -rotate-45"></div>
-                                </div>
-                            </div>
-                            <h3 class="font-bold text-lg">"What Not to Do" Map</h3>
-                            <p class="text-sm text-slate-600">A clear guide on which strategies to avoid.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="playbook" class="content-section">
-                <div class="max-w-5xl mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">The Turnaround Playbook</h2>
-                    <p class="text-center text-slate-600 mb-10">A repeatable process of applying superior insight and execution to a pre-validated market problem.</p>
-                    
-                    <div id="playbook-steps" class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4 mb-8">
-                        <div class="w-full md:w-1/4 text-center">
-                            <button data-detail="sourcing" class="playbook-step w-20 h-20 bg-white border-2 border-slate-300 rounded-full flex items-center justify-center font-bold text-slate-800 text-3xl transition-all duration-200 cursor-pointer">1</button>
-                            <h4 class="mt-2 font-semibold">Sourcing</h4>
-                        </div>
-                        <div class="flex-1 w-full md:w-auto border-t-2 md:border-t-0 md:border-l-2 border-dashed border-slate-300 h-8 md:h-auto"></div>
-                        <div class="w-full md:w-1/4 text-center">
-                            <button data-detail="diligence" class="playbook-step w-20 h-20 bg-white border-2 border-slate-300 rounded-full flex items-center justify-center font-bold text-slate-800 text-3xl transition-all duration-200 cursor-pointer">2</button>
-                            <h4 class="mt-2 font-semibold">Access</h4>
-                        </div>
-                        <div class="flex-1 w-full md:w-auto border-t-2 md:border-t-0 md:border-l-2 border-dashed border-slate-300 h-8 md:h-auto"></div>
-                        <div class="w-full md:w-1/4 text-center">
-                            <button data-detail="extraction" class="playbook-step w-20 h-20 bg-white border-2 border-slate-300 rounded-full flex items-center justify-center font-bold text-slate-800 text-3xl transition-all duration-200 cursor-pointer">3</button>
-                            <h4 class="mt-2 font-semibold">Insight</h4>
-                        </div>
-                        <div class="flex-1 w-full md:w-auto border-t-2 md:border-t-0 md:border-l-2 border-dashed border-slate-300 h-8 md:h-auto"></div>
-                        <div class="w-full md:w-1/4 text-center">
-                            <button data-detail="redevelopment" class="playbook-step w-20 h-20 bg-white border-2 border-slate-300 rounded-full flex items-center justify-center font-bold text-slate-800 text-3xl transition-all duration-200 cursor-pointer">4</button>
-                            <h4 class="mt-2 font-semibold">Rebuild</h4>
-                        </div>
-                    </div>
-
-                    <div id="playbook-details-container" class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm min-h-[150px]">
-                        <div id="sourcing" class="playbook-details">
-                            <h3 class="font-bold text-lg mb-2">Step 1: Sourcing Targets</h3>
-                            <p class="text-slate-600">Identify failed startups with evidence of initial customer traction, signaling they found a real problem.</p>
-                        </div>
-                        <div id="diligence" class="playbook-details">
-                            <h3 class="font-bold text-lg mb-2">Step 2: Diligence & The Access Wedge</h3>
-                            <p class="text-slate-600">Gain access to assets by offering solutions: a clean wind-down for VCs, a soft landing for founders, or a small cash recovery for a worthless asset.</p>
-                        </div>
-                        <div id="extraction" class="playbook-details">
-                            <h3 class="font-bold text-lg mb-2">Step 3: Insight Extraction</h3>
-                            <p class="text-slate-600">Perform data archaeology on Slack, emails, and support tickets to find the gap between what customers wanted and what the company built.</p>
-                        </div>
-                        <div id="redevelopment" class="playbook-details">
-                            <h3 class="font-bold text-lg mb-2">Step 4: Redevelopment</h3>
-                            <p class="text-slate-600">Acquire assets cheaply and task a lean team to build the product the extracted customer data actually describes.</p>
-                        </div>
-                         <div id="playbook-prompt" class="playbook-details active flex items-center justify-center h-full text-slate-500">
-                            <p>Click a step above to see the details.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
+            <!-- Tech Stack Section -->
             <section id="tech" class="content-section">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">The Proprietary Tech Stack</h2>
-                    <p class="text-center text-slate-600 mb-8">A repeatable factory requires an unfair advantage in both insight discovery and operational efficiency.</p>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm">
-                            <h3 class="font-bold text-xl mb-3 text-slate-800">Recovery: The Insight Engine</h3>
-                            <p class="text-slate-600 mb-4">A platform to automate data archaeology and find "missed insights" in unstructured data.</p>
-                            <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
-                                <li>Unified Data Ingestion (Slack, Zendesk, etc.)</li>
-                                <li>AI-Powered Analysis for sentiment & topics</li>
-                                <li>Insight Surfacing of un-built opportunities</li>
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-4xl font-bold text-center mb-4">The Insight Engine</h2>
+                    <p class="text-xl text-center text-gray-600 mb-10">A proprietary tech stack for an unfair advantage in insight discovery and operational efficiency.</p>
+                    
+                    <nav class="mb-8 flex justify-center">
+                        <div id="tech-sub-nav" class="inline-flex rounded-md shadow-sm" role="group">
+                            <button type="button" data-sub-tab="ingestion" class="sub-nav-link px-6 py-3 text-lg font-medium text-gray-900 bg-white border border-gray-200 rounded-l-lg hover:bg-gray-100">1. Ingestion</button>
+                            <button type="button" data-sub-tab="analysis" class="sub-nav-link px-6 py-3 text-lg font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100">2. Analysis</button>
+                            <button type="button" data-sub-tab="presentation" class="sub-nav-link px-6 py-3 text-lg font-medium text-gray-900 bg-white border border-gray-200 rounded-r-lg hover:bg-gray-100">3. Presentation</button>
+                        </div>
+                    </nav>
+
+                    <div id="tech-sub-content">
+                        <div id="ingestion" class="sub-content-section card p-8">
+                            <h3 class="text-2xl font-bold mb-3">Phase 1: Ingestion (The Connectors)</h3>
+                            <p class="text-gray-700 mb-4">Pull all unstructured data into a centralized data lake (e.g., AWS S3) using Python connectors.</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-800">
+                                <li><strong>Slack:</strong> Use the `slack_sdk` to extract complete message histories.</li>
+                                <li><strong>Gmail / G Suite:</strong> Use the `google-api-python-client` to extract emails from key shared inboxes.</li>
+                                <li><strong>Zendesk / Intercom:</strong> Use standard REST API calls to pull all support ticket conversations.</li>
+                                <li><strong>Prerequisite:</strong> This process requires administrative credentials for each service, handed over during acquisition.</li>
                             </ul>
                         </div>
-                        <div class="bg-white p-6 rounded-lg border border-stone-200 shadow-sm">
-                             <h3 class="font-bold text-xl mb-3 text-slate-800">Operations: Shared Services</h3>
-                            <p class="text-slate-600 mb-4">A centralized platform to streamline business functions and minimize costs for all portfolio companies.</p>
-                             <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
-                                <li>Automated Finance & Spend Management</li>
-                                <li>Centralized SaaS & Cloud Infrastructure</li>
-                                <li>Lean HR, Payroll & Administration</li>
+                        <div id="analysis" class="sub-content-section card p-8">
+                            <h3 class="text-2xl font-bold mb-3">Phase 2: Analysis (AI + Human)</h3>
+                            <p class="text-gray-700 mb-4">Use an LLM to extract insights from raw data, validated by a human-in-the-loop (HITL) process.</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-800">
+                                <li><strong>AI Processing:</strong> Use the Gemini API with a detailed prompt to categorize text and assign sentiment scores.</li>
+                                <li><strong>Human Validation (HITL):</strong> Before bulk processing, a human reviews a random sample (2-5%) of the AI's output.</li>
+                                <li><strong>Feedback Loop:</strong> Corrections are saved to a "golden dataset" to refine the AI prompt and ensure quality.</li>
+                            </ul>
+                        </div>
+                        <div id="presentation" class="sub-content-section card p-8">
+                            <h3 class="text-2xl font-bold mb-3">Phase 3: Presentation (The Dashboard)</h3>
+                            <p class="text-gray-700 mb-4">Surface insights for the product team via a simple internal dashboard.</p>
+                             <ul class="list-disc list-inside space-y-2 text-gray-800">
+                                <li><strong>Backend:</strong> A simple Python web framework (Flask or FastAPI) to serve data from cloud storage.</li>
+                                <li><strong>Frontend:</strong> A static HTML/CSS/JavaScript page to render insights.</li>
+                                <li><strong>Key Features:</strong> Filterable lists, keyword search, and basic charts using Chart.js.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="model" class="content-section">
+            <!-- Deal Sourcing Section -->
+            <section id="sourcing" class="content-section">
                 <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-2 text-slate-900">A Modern Turnaround Model</h2>
-                    <p class="text-center text-slate-600 mb-8">Inspired by Constellation Software, we target precursors to good companies: ventures that found the right niche but lacked competent management.</p>
-                    <div class="bg-white p-8 rounded-lg border border-stone-200 shadow-sm">
-                        <h3 class="font-bold text-xl mb-4">The Four Pillars of Success</h3>
-                        <div class="grid sm:grid-cols-2 gap-x-8 gap-y-6">
-                            <div class="flex items-start">
-                                <span class="text-amber-500 font-bold text-2xl mr-3">1.</span>
-                                <div>
-                                    <h4 class="font-semibold">Find "Good Losers"</h4>
-                                    <p class="text-sm text-slate-600">Find failures with validated insight.</p>
-                                </div>
-                            </div>
-                             <div class="flex items-start">
-                                <span class="text-amber-500 font-bold text-2xl mr-3">2.</span>
-                                <div>
-                                    <h4 class="font-semibold">Acquire Cheaply</h4>
-                                    <p class="text-sm text-slate-600">Buy assets at near-zero valuations.</p>
-                                </div>
-                            </div>
-                             <div class="flex items-start">
-                                <span class="text-amber-500 font-bold text-2xl mr-3">3.</span>
-                                <div>
-                                    <h4 class="font-semibold">Find the Gold</h4>
-                                    <p class="text-sm text-slate-600">Excel at data archaeology.</p>
-                                </div>
-                            </div>
-                             <div class="flex items-start">
-                                <span class="text-amber-500 font-bold text-2xl mr-3">4.</span>
-                                <div>
-                                    <h4 class="font-semibold">Execute & Rebuild</h4>
-                                    <p class="text-sm text-slate-600">Build from insights, efficiently.</p>
-                                </div>
-                            </div>
+                    <h2 class="text-4xl font-bold text-center mb-10">Deal Sourcing Strategy</h2>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="card p-6">
+                            <h3 class="text-2xl font-semibold mb-3">Leading Indicators</h3>
+                            <p class="text-gray-600 mb-4">Early warning signals of distress (6-12 months out).</p>
+                             <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Sudden headcount decline on LinkedIn.</li>
+                                <li>A halt in social media or blog activity.</li>
+                                <li>No follow-on funding in the typical 18-24 month window.</li>
+                                <li>Quiet removal from a VC's portfolio page.</li>
+                            </ul>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-2xl font-semibold mb-3">Lagging Indicators</h3>
+                            <p class="text-gray-600 mb-4">Signals of imminent failure requiring quick action.</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Public "sunsetting" announcement.</li>
+                                <li>Appearance on tech layoff aggregators.</li>
+                                <li>Assets appearing in IP broker or liquidator listings.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -267,45 +222,47 @@
         document.addEventListener('DOMContentLoaded', function() {
             const mainNav = document.getElementById('main-nav');
             const contentSections = document.querySelectorAll('.content-section');
-            const tabButtons = document.querySelectorAll('.tab-button');
+            const mainNavLinks = document.querySelectorAll('.nav-link');
 
-            const playbookStepsContainer = document.getElementById('playbook-steps');
-            const playbookDetailSections = document.querySelectorAll('.playbook-details');
-            const playbookSteps = document.querySelectorAll('.playbook-step');
+            const techSubNav = document.getElementById('tech-sub-nav');
+            const techSubContentSections = document.querySelectorAll('.sub-content-section');
+            const techSubNavLinks = document.querySelectorAll('.sub-nav-link');
 
             function setActiveTab(tabName) {
-                tabButtons.forEach(button => {
-                    button.classList.toggle('active', button.dataset.tab === tabName);
+                mainNavLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.tab === tabName);
                 });
                 contentSections.forEach(section => {
                     section.classList.toggle('active', section.id === tabName);
                 });
             }
 
-            function setActivePlaybookDetail(detailName) {
-                playbookSteps.forEach(step => {
-                    step.classList.toggle('active', step.dataset.detail === detailName);
+            function setActiveSubTab(subTabName) {
+                techSubNavLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.subTab === subTabName);
                 });
-                playbookDetailSections.forEach(section => {
-                    section.classList.toggle('active', section.id === detailName);
+                techSubContentSections.forEach(section => {
+                    section.classList.toggle('active', section.id === subTabName);
                 });
             }
-            
+
             mainNav.addEventListener('click', (e) => {
-                if (e.target.matches('.tab-button')) {
+                if (e.target.matches('.nav-link')) {
                     const tabName = e.target.dataset.tab;
                     setActiveTab(tabName);
                 }
             });
 
-            playbookStepsContainer.addEventListener('click', (e) => {
-                if (e.target.matches('.playbook-step')) {
-                    const detailName = e.target.dataset.detail;
-                    setActivePlaybookDetail(detailName);
+            techSubNav.addEventListener('click', (e) => {
+                if (e.target.matches('.sub-nav-link')) {
+                    const subTabName = e.target.dataset.subTab;
+                    setActiveSubTab(subTabName);
                 }
             });
 
-            setActiveTab('opportunity');
+            // Set initial state
+            setActiveTab('thesis');
+            setActiveSubTab('ingestion');
         });
     </script>
 
